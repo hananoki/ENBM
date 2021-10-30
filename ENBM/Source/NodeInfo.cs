@@ -15,6 +15,10 @@ namespace ENBM {
 		public string name;
 		public string fullPath;
 		public TreeNode node;
+
+		public virtual string getGameFolderPath() {
+			return "";
+		}
 	} // class
 
 
@@ -27,6 +31,7 @@ namespace ENBM {
 		public List<NodePreset> presets;
 		public NodePreset installed;
 
+
 		public TreeNode makeNode() {
 			node = new TreeNode( name );
 
@@ -38,8 +43,8 @@ namespace ENBM {
 
 			var dirs = Directory.GetDirectories( fullPath );
 
-			presets = dirs.Select( x =>
-				new NodePreset { name = x.getBaseName(), fullPath = x, title = this } ).ToList();
+			presets = dirs.Where( x => x.getFileName() != ".override" ).Select( x =>
+							new NodePreset { name = x.getBaseName(), fullPath = x, title = this } ).ToList();
 
 			foreach( var a in presets ) {
 				var treeNnode = a.makeNode();
@@ -57,12 +62,18 @@ namespace ENBM {
 					if( find != null ) {
 						find.node.ImageIndex = 2;
 						find.node.SelectedImageIndex = 2;
-						
+
 						installed = find;
 					}
 				}
 			}
 			return node;
+		}
+
+		public override string getGameFolderPath() {
+			var steamPath = MainForm.getSteamFolder();
+			var path = $@"{steamPath}\steamapps\common\{name}";
+			return path.separatorToOS();
 		}
 	} // class
 
@@ -74,7 +85,8 @@ namespace ENBM {
 	public class NodePreset : NodeInfo {
 
 		public NodeTitle title;
-		public List<string> m_targetFileName;
+
+		public List<string> m_targetFileName; ///< コピーするファイルリスト
 		public string GUID;
 
 		public TreeNode makeNode() {

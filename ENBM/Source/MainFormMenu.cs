@@ -16,25 +16,40 @@ namespace ENBM {
 		}
 
 
-		async void toolStripButton1_Click( object sender, EventArgs e ) {
+		/// <summary>
+		/// 最新の情報に更新
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void toolStripButton_Reload_Click( object sender, EventArgs e ) {
+			initTreeView();
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		async void toolStripButton_Install_Click( object sender, EventArgs e ) {
 			var steamPath = getSteamFolder();
 
-			var fo4path = $@"{steamPath}\steamapps\common\{m_selectNodePreset.title.name}";
+			var gamePath = m_selectNodePreset.title.getGameFolderPath(); ;
 
-			if( !fo4path.isExistsDirectory() ) return;
+			if( !gamePath.isExistsDirectory() ) return;
 
-			Environment.CurrentDirectory = fo4path;
+			Environment.CurrentDirectory = gamePath;
 
 			var path = m_selectNodePreset.fullPath;
 			var files = Directory.GetFiles( path, "*", SearchOption.AllDirectories );
 
-			toolStripButton1.Enabled = false;
+			toolStripButton_Install.Enabled = false;
 
-			setNotifyText( S.MsgInstallNow.format( m_selectNodePreset.name ) );
+			setNotifyText( S.Msg_InstallNow.format( m_selectNodePreset.name ) );
 			toolStripProgressBar1.Visible = true;
 			toolStripProgressBar1.Value = 0;
-			toolStripProgressBar1.Step = (int)((100000.0f / files.Length)+0.5f);
-			await Task.Run(()=> {
+			toolStripProgressBar1.Step = (int) ( ( 100000.0f / files.Length ) + 0.5f );
+			await Task.Run( () => {
 				foreach( var p in files ) {
 					var pname = p.Remove( 0, path.Length + 1 );
 					fs.cp( p, pname );
@@ -44,6 +59,11 @@ namespace ENBM {
 				}
 			} );
 
+			if( m_config.hasEnableEnbLocal( m_selectNodePreset.title.name ) ) {
+				var enblocal = $@"{m_selectNodePreset.title.fullPath}\.override\enblocal.ini";
+				fs.cp( enblocal, "enblocal.ini", true );
+			}
+
 			// 内部的にはコピー完了していてもPerformStep呼び出しの結果反映が画面に出るまでラグがある
 			// 見た目上プログレスバーの表示が100%になってから終了したいので適当に待つ
 			// PC環境依存の可能性もあるので微妙かもしれない
@@ -51,9 +71,9 @@ namespace ENBM {
 				Thread.Sleep( 500 );
 			} );
 
-			
+
 			toolStripProgressBar1.Visible = false;
-			setNotifyText( S.MsgInstall.format( m_selectNodePreset.name ) );
+			setNotifyText( S.Msg_Install.format( m_selectNodePreset.name ) );
 
 			initTreeView();
 		}

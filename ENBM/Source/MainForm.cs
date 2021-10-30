@@ -36,9 +36,11 @@ namespace ENBM {
 
 		public static Config config => instance.m_config;
 		public static Language language => instance.m_language;
-		public static Dictionary<string, int> iconIndexs=> instance.m_iconIndexs;
+		public static Dictionary<string, int> iconIndexs => instance.m_iconIndexs;
 
 		public static Dictionary<TreeNode, NodeInfo> nodeInfos => m_nodeInfos;
+
+		bool exceptionError;
 
 		public MainForm() {
 			instance = this;
@@ -53,11 +55,28 @@ namespace ENBM {
 		/// <param name="e"></param>
 		void Form1_Load( object sender, EventArgs e ) {
 			Font = SystemFonts.IconTitleFont;
+			Text = $"{Text} {Helper.version}";
 
+			m_config = new Config();
 			Helper.ReadJson( ref m_config, Helper.configPath );
 			rollbackWindow();
 
-			m_language = new Language();
+			try {
+				m_language = new Language();
+			}
+			catch( Exception except ) {
+				MessageBox.Show( except.Message, "Error" );
+				exceptionError = true;
+				Close();
+				return;
+			}
+			if( !$@"{Helper.s_appPath}\.icons".isExistsFile() ) {
+				MessageBox.Show( "\".icons\" is Not Found.", "Error" );
+				exceptionError = true;
+				Close();
+				return;
+			}
+
 			toolStripComboBox1.Items.Clear();
 			var lst = m_language.languageNames;
 			foreach( var s in lst ) {
@@ -103,19 +122,15 @@ namespace ENBM {
 
 			updateLanguage();
 
-
-			
-
-
 			sound.addData( "start", Helper.s_appPath + "\\startup.wav" );
 			sound.play( "start" );
-			//Bitmap bitmap = appIcon.ToBitmap();
-			//imageList1.Images[ 0 ] = bitmap;
 		}
 
 
 
 		private void MainForm_FormClosing( object sender, FormClosingEventArgs e ) {
+			if( exceptionError ) return;
+
 			var foldList = new List<string>();
 			foreach( var p in m_titleTree ) {
 				if( p.node.IsExpanded ) {
@@ -135,12 +150,20 @@ namespace ENBM {
 		}
 
 
+		void checkBox1_CheckStateChanged( object sender, EventArgs e ) {
+			var chk = (CheckBox) sender;
+			var node = (NodeTitle) chk.Tag;
 
-		void toolStripButton3_Click( object sender, EventArgs e ) {
-			setNotifyText( "test" );
+			m_config.setEnableEnbLocal( node.name, chk.Checked );
+
+			if( !chk.Checked ) return;
+
+			var path = $@"{node.fullPath}\.override\enblocal.ini";
+
+			if( path.isExistsFile() ) return;
+
+			fs.mkDir( path.getDirectoryName() );
+			File.WriteAllText( path, "" );
 		}
-
-
-
 	}
 }

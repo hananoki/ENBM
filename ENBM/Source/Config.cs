@@ -1,11 +1,9 @@
-﻿using System;
+﻿using HananokiLib;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ENBM {
-	public　class Config {
+	public class Config {
 		public int width = 800;
 		public int height = 600;
 		public int x;
@@ -17,5 +15,30 @@ namespace ENBM {
 		public string lastSelectGUID;
 
 		public List<string> foldTitle = new List<string>();
+
+		public List<ConfigTitle> title = new List<ConfigTitle>();
+
+		public bool hasEnableEnbLocal( string titleName ) {
+			var find = title.Find( x => x.name == titleName );
+			if( find == null ) return false;
+
+			return find.flag.Has( D.ENABLE_ENBLOCAL );
+		}
+		public void setEnableEnbLocal( string titleName, bool flag ) {
+			var find = title.Find( x => x.name == titleName );
+			if( find == null ) {
+				find = new ConfigTitle();
+				find.name = titleName;
+				title.Add( find );
+			}
+
+			find.flag.Toggle( D.ENABLE_ENBLOCAL, flag );
+		}
+	}
+
+
+	public class ConfigTitle {
+		public string name;
+		public int flag;
 	}
 }

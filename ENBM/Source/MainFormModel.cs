@@ -11,16 +11,15 @@ namespace ENBM {
 
 	public partial class MainForm : Form {
 
-		public void updateLanguage() {
-			toolStripLabel1.Text = S.Lang;
-			toolStripButton1.Text = S.Install;
-			toolStripButton2.Text = S.Uninstall;
-			//toolStripLabel_Profile.Text = m_language[ "$UI_PROFILE" ];
-			//toolStripButton_Build.Text = m_language[ "$UI_BUILD" ];
-			//toolStripButton_Clean.Text = m_language[ "$UI_CLEAN" ];
-			//toolStripButton_Refresh.Text = m_language[ "$UI_REFRESH" ];
-			//toolStripButton2.Text = m_language[ "$UI_COPY_GUID" ];
-			//linkLabel1.Text = m_language[ "$UI_OUTPUT_FOLDER" ];
+		void updateLanguage() {
+			toolStripLabel_Language.Text = S.Lang;
+			toolStripButton_Install.Text = S.Install;
+			toolStripButton_Uninstall.Text = S.Uninstall;
+			toolStripButton_Reload.Text = S.Refresh;
+			contextMenuStrip1.Items[ 0 ].Text = S.Context_OpenGameFolder;
+			contextMenuStrip2.Items[ 0 ].Text = S.Context_OpenPresetFolder;
+			contextMenuStrip2.Items[ 1 ].Text = S.Context_RemovePresetFolder;
+			checkBox1.Text = S.CheckBox_ENBLocal;
 		}
 
 
@@ -64,6 +63,16 @@ namespace ENBM {
 
 
 
+		void initPanel( NodeTitle node ) {
+			listView1.Visible = false;
+			panel1.Visible = true;
+
+			
+			checkBox1.Tag = node;
+			checkBox1.Checked = m_config.hasEnableEnbLocal( node.name );
+		}
+
+
 		void rollbackWindow() {
 			//Location = new Point( m_config.x, m_config.y );
 			Width = m_config.width;
@@ -79,6 +88,13 @@ namespace ENBM {
 		}
 
 
+		void startFilePath( string filepath ) {
+			if( string.IsNullOrEmpty( filepath ) ) return;
+
+			System.Diagnostics.Process.Start( $"{filepath.quote()}" );
+		}
+
+
 		public static string getSteamFolder() {
 			using( var regkey = Registry.CurrentUser.OpenSubKey( @"Software\Valve\Steam", false ) ) {
 				//キーが存在しないときは null が返される
@@ -91,6 +107,7 @@ namespace ENBM {
 				return stringValue;
 			}
 		}
+
 
 
 		public void clearNotifyText() {

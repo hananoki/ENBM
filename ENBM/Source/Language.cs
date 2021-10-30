@@ -1,4 +1,5 @@
 ﻿using HananokiLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,8 +16,10 @@ namespace ENBM {
 
 
 		public Language() {
+			var path = $"{Helper.s_appPath}\\.translations";
+			if( !path.isExistsDirectory() ) throw new Exception( "\".translations\" is Not Found." );
 
-			var lang = Directory.GetFiles( $"{Helper.s_appPath}\\.translations", "*.txt" );
+			var lang = Directory.GetFiles( path, "*.txt" );
 			m_languageFileMap = new Dictionary<string, string>( lang.Length );
 			foreach( var s in lang ) {
 				m_languageFileMap.Add( s.getBaseName(), s );
