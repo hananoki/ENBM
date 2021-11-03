@@ -14,9 +14,13 @@ namespace ENBM {
 		public string lastSelectTitle;
 		public string lastSelectGUID;
 
+		public string sevenZipPath;
+
+
 		public List<string> foldTitle = new List<string>();
 
 		public List<ConfigTitle> title = new List<ConfigTitle>();
+
 
 		public bool hasEnableEnbLocal( string titleName ) {
 			var find = title.Find( x => x.name == titleName );
@@ -34,11 +38,12 @@ namespace ENBM {
 
 			find.flag.Toggle( D.ENABLE_ENBLOCAL, flag );
 		}
-	}
+	} // class
 
 
 	public class ConfigTitle {
 		public string name;
 		public int flag;
-	}
+	} // class
+
 }

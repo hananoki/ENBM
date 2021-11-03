@@ -1,8 +1,5 @@
 ﻿using HananokiLib;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 
@@ -17,6 +14,8 @@ namespace ENBM {
 					contextMenuStrip1.Show( Cursor.Position );
 				}
 				else {
+					contextMenuStrip2.Tag = m_nodeInfos[ e.Node ];
+					contextMenuStrip2.Items[ 3 ].Enabled = m_enbLocal != null ? true : false;
 					contextMenuStrip2.Show( Cursor.Position );
 				}
 			}
@@ -85,9 +84,9 @@ namespace ENBM {
 
 			sf.wFunc = Win32.FileFuncFlags.FO_DELETE; // 削除を指示します。
 			sf.fFlags = Win32.FILEOP_FLAGS.FOF_ALLOWUNDO; //「元に戻す」を有効にします。
-			//sf.fFlags = sf.fFlags | FILEOP_FLAGS.FOF_NOERRORUI; //エラー画面を表示しません。
-			//sf.fFlags = sf.fFlags | FILEOP_FLAGS.FOF_SILENT; //進捗ダイアログを表示しません。
-			//sf.fFlags = sf.fFlags | FILEOP_FLAGS.FOF_NOCONFIRMATION; //削除確認ダイアログを表示しません。
+																										//sf.fFlags = sf.fFlags | FILEOP_FLAGS.FOF_NOERRORUI; //エラー画面を表示しません。
+																										//sf.fFlags = sf.fFlags | FILEOP_FLAGS.FOF_SILENT; //進捗ダイアログを表示しません。
+																										//sf.fFlags = sf.fFlags | FILEOP_FLAGS.FOF_NOCONFIRMATION; //削除確認ダイアログを表示しません。
 			sf.pFrom = info.fullPath + "\0";
 
 			int result;

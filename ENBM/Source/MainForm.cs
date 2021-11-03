@@ -42,6 +42,10 @@ namespace ENBM {
 
 		bool exceptionError;
 
+
+		FileENBLocal m_enbLocal;
+
+
 		public MainForm() {
 			instance = this;
 			InitializeComponent();
@@ -124,6 +128,9 @@ namespace ENBM {
 
 			sound.addData( "start", Helper.s_appPath + "\\startup.wav" );
 			sound.play( "start" );
+
+			var enblocalPath = $@"{Helper.s_appPath}\.enbseries\enblocal.ini";
+			m_enbLocal = FileENBLocal.load( enblocalPath );
 		}
 
 
@@ -165,5 +172,51 @@ namespace ENBM {
 			fs.mkDir( path.getDirectoryName() );
 			File.WriteAllText( path, "" );
 		}
+
+
+		void toolStripButton1_Click( object sender, EventArgs e ) {
+			var a = new Settings();
+			a.ShowDialog();
+			updatePanel();
+		}
+
+
+		private void button1_Click( object sender, EventArgs e ) {
+			void extract( ListView lv, string folName ) {
+				foreach( ListViewItem p in lv.Items ) {
+					if( !p.Checked ) continue;
+					var tag = (FilePathTag) p.Tag;
+					shell.SetProcessEnvironmentPath( m_config.sevenZipPath.getDirectoryName() );
+					var outputDirName = $@"{tag.nodeTitle.fullPath}\{folName}";
+					fs.mkDir( outputDirName );
+					shell.startProcess( "7z.exe", $@"x -o{outputDirName.quote()} {tag.fullpath.quote()}" );
+				}
+			}
+			var folder = "New Preset";
+			foreach( ListViewItem pp in listView3.Items ) {
+				if( !pp.Checked ) continue;
+				folder = pp.Text;
+				break;
+			}
+
+			extract( listView2, folder );
+			extract( listView3, folder );
+
+			initTreeView();
+		}
+
+
+		private void wINDOWToolStripMenuItem_Click( object sender, EventArgs e ) {
+			var preset = contextMenuStrip2.Tag as NodePreset;
+			if( preset == null ) return;
+			m_enbLocal?.replace( $@"{preset.fullPath}\enblocal.ini", typeof( FileENBLocal.WINDOW ) );
+		}
+
+		private void iNPUTToolStripMenuItem_Click( object sender, EventArgs e ) {
+			var preset = contextMenuStrip2.Tag as NodePreset;
+			if( preset == null ) return;
+			m_enbLocal?.replace( $@"{preset.fullPath}\enblocal.ini", typeof( FileENBLocal.INPUT ) );
+		}
+
 	}
 }

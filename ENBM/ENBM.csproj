@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="Source\Config.cs" />
     <Compile Include="Source\D.cs" />
+    <Compile Include="Source\FileENBLocal.cs" />
     <Compile Include="Source\Language.cs" />
     <Compile Include="Source\ListViewItemTag.cs" />
     <Compile Include="Source\MainForm.cs">

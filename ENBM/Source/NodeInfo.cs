@@ -43,8 +43,8 @@ namespace ENBM {
 
 			var dirs = Directory.GetDirectories( fullPath );
 
-			presets = dirs.Where( x => x.getFileName() != ".override" ).Select( x =>
-							new NodePreset { name = x.getBaseName(), fullPath = x, title = this } ).ToList();
+			presets = dirs.Where( x => !x.getFileName().StartsWith(".") ).Select( x =>
+							new NodePreset { name = x.getFileName(), fullPath = x, title = this } ).ToList();
 
 			foreach( var a in presets ) {
 				var treeNnode = a.makeNode();
@@ -70,6 +70,7 @@ namespace ENBM {
 			return node;
 		}
 
+
 		public override string getGameFolderPath() {
 			var steamPath = MainForm.getSteamFolder();
 			var path = $@"{steamPath}\steamapps\common\{name}";
@@ -88,6 +89,7 @@ namespace ENBM {
 
 		public List<string> m_targetFileName; ///< コピーするファイルリスト
 		public string GUID;
+
 
 		public TreeNode makeNode() {
 			node = new TreeNode( name );

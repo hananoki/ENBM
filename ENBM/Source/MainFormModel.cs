@@ -12,14 +12,15 @@ namespace ENBM {
 	public partial class MainForm : Form {
 
 		void updateLanguage() {
-			toolStripLabel_Language.Text = S.Lang;
-			toolStripButton_Install.Text = S.Install;
-			toolStripButton_Uninstall.Text = S.Uninstall;
-			toolStripButton_Reload.Text = S.Refresh;
-			contextMenuStrip1.Items[ 0 ].Text = S.Context_OpenGameFolder;
-			contextMenuStrip2.Items[ 0 ].Text = S.Context_OpenPresetFolder;
-			contextMenuStrip2.Items[ 1 ].Text = S.Context_RemovePresetFolder;
-			checkBox1.Text = S.CheckBox_ENBLocal;
+			toolStripLabel_Language.Text = S.UI_LANG;
+			toolStripButton_Install.Text = S.UI_INSTALL;
+			toolStripButton_Uninstall.Text = S.UI_UNINSTALL;
+			toolStripButton_Reload.Text = S.UI_REFRESH;
+			contextMenuStrip1.Items[ 0 ].Text = S.CONTEXT_OPEN_GAME_FOLDER;
+			contextMenuStrip2.Items[ 0 ].Text = S.CONTEXT_OPEN_PRESET_FOLDER;
+			contextMenuStrip2.Items[ 1 ].Text = S.CONTEXT_REMOVE_PRESET_FOLDER;
+			contextMenuStrip2.Items[ 3 ].Text = S.CONTEXT_COM_EMBLOC_RESET;
+			checkBox1.Text = S.UI_CHKBOX_ENBLOCAL;
 		}
 
 
@@ -63,13 +64,52 @@ namespace ENBM {
 
 
 
+		void updatePanel() {
+			button1.Enabled = m_config.sevenZipPath.isExistsFile() ? true : false;
+		}
+
+
+
 		void initPanel( NodeTitle node ) {
 			listView1.Visible = false;
 			panel1.Visible = true;
 
-			
+
 			checkBox1.Tag = node;
 			checkBox1.Checked = m_config.hasEnableEnbLocal( node.name );
+
+			label2.Text = m_config.lastSelectTitle;
+
+			listView2.Items.Clear();
+			var dirpath = $@"{Helper.s_appPath }\.enbseries";
+			if( dirpath.isExistsDirectory() ) {
+				foreach( var p in Directory.GetFiles( dirpath, "*.zip" ) ) {
+					var item = new ListViewItem( p.getBaseName() );
+					item.Tag = new FilePathTag {
+						fullpath = p,
+						nodeTitle = node,
+					};
+					listView2.Items.Add( item );
+				}
+				listView2.Columns[ 0 ].Width = listView2.Width - 4;
+			}
+
+
+			listView3.Items.Clear();
+			var dirpath2 = $@"{Helper.s_appPath }\{node.name}\.presets";
+			if( dirpath2.isExistsDirectory() ) {
+				foreach( var p in Directory.GetFiles( dirpath2 ) ) {
+					var item = new ListViewItem( p.getBaseName() );
+					item.Tag = new FilePathTag {
+						fullpath = p,
+						nodeTitle = node,
+					};
+					listView3.Items.Add( item );
+				}
+				listView3.Columns[ 0 ].Width = listView3.Width - 4;
+			}
+
+			updatePanel();
 		}
 
 
@@ -139,7 +179,7 @@ namespace ENBM {
 					timer.Start(); // timer.Start()と同じ
 				}
 			} ) );
-			//Debug.Log( text );
 		}
+
 	} // class
 }

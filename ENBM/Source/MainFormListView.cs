@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
+
 namespace ENBM {
 
 	public partial class MainForm : Form {
@@ -23,12 +24,18 @@ namespace ENBM {
 			presetNode.m_targetFileName = new List<string>( files.Length );
 
 			listView1.Items.Clear();
+			listView1.Columns[ 0 ].Text = S.UI_FILEPATH;
 
 			foreach( var p in files ) {
 				var pname = p.Remove( 0, fullpath.Length + 1 );
 				var newItem = new ListViewItem( new string[] { pname } );
 				newItem.Tag = new ListViewItemTag { fullpath = p };
-
+				if( pname == "enblocal.ini" ) {
+					newItem.BackColor = Color.PaleTurquoise;
+				}
+				if( pname == "enbseries.ini" ) {
+					newItem.BackColor = Color.LightSkyBlue;
+				}
 				listView1.Items.Add( newItem );
 
 				presetNode.m_targetFileName.Add( pname );

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace ENBM {
 
 	public partial class MainForm : Form {
@@ -45,7 +46,7 @@ namespace ENBM {
 
 			toolStripButton_Install.Enabled = false;
 
-			setNotifyText( S.Msg_InstallNow.format( m_selectNodePreset.name ) );
+			setNotifyText( S.MSG_INSTALL_NOW.format( m_selectNodePreset.name ) );
 			toolStripProgressBar1.Visible = true;
 			toolStripProgressBar1.Value = 0;
 			toolStripProgressBar1.Step = (int) ( ( 100000.0f / files.Length ) + 0.5f );
@@ -73,7 +74,7 @@ namespace ENBM {
 
 
 			toolStripProgressBar1.Visible = false;
-			setNotifyText( S.Msg_Install.format( m_selectNodePreset.name ) );
+			setNotifyText( S.MSG_INSTALL.format( m_selectNodePreset.name ) );
 
 			initTreeView();
 		}
@@ -99,7 +100,7 @@ namespace ENBM {
 				fs.rm( $".{m_selectNodePreset.name}" );
 			}
 
-			setNotifyText( S.Uninstall.format( m_selectNodePreset.name ) );
+			setNotifyText( S.UI_UNINSTALL.format( m_selectNodePreset.name ) );
 
 			initTreeView();
 		}
