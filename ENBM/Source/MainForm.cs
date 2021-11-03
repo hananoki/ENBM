@@ -45,6 +45,8 @@ namespace ENBM {
 
 		FileENBLocal m_enbLocal;
 
+		NodeTitle m_currentTitle;
+
 
 		public MainForm() {
 			instance = this;
@@ -181,13 +183,13 @@ namespace ENBM {
 		}
 
 
-		private void button1_Click( object sender, EventArgs e ) {
-			void extract( ListView lv, string folName ) {
+		void button1_Click( object sender, EventArgs e ) {
+			void extract( ListView lv, string _outputPath ) {
 				foreach( ListViewItem p in lv.Items ) {
 					if( !p.Checked ) continue;
 					var tag = (FilePathTag) p.Tag;
 					shell.SetProcessEnvironmentPath( m_config.sevenZipPath.getDirectoryName() );
-					var outputDirName = $@"{tag.nodeTitle.fullPath}\{folName}";
+					var outputDirName = _outputPath;
 					fs.mkDir( outputDirName );
 					shell.startProcess( "7z.exe", $@"x -o{outputDirName.quote()} {tag.fullpath.quote()}" );
 				}
@@ -198,11 +200,33 @@ namespace ENBM {
 				folder = pp.Text;
 				break;
 			}
-
-			extract( listView2, folder );
-			extract( listView3, folder );
+			var outputPath = $@"{m_currentTitle.fullPath}\{folder}";
+			if( outputPath.isExistsDirectory() ) {
+				int count = 1;
+				while(true) {
+					var newPath = $"{outputPath}{count}";
+					if( !newPath.isExistsDirectory() ) {
+						outputPath = newPath;
+						break;
+					}
+					count++;
+				} 
+			}
+			extract( listView2, outputPath );
+			extract( listView3, outputPath );
 
 			initTreeView();
+
+			foreach(var p in m_titleTree ) {
+				if( p.name == m_config.lastSelectTitle ) {
+					var find=p.presets.Find( x => x.fullPath == outputPath );
+					if( find !=null) {
+						treeView1.SelectedNode = find.node;
+						treeView1.Focus();
+					}
+					break;
+				}
+			}
 		}
 
 

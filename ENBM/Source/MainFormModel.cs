@@ -73,7 +73,7 @@ namespace ENBM {
 		void initPanel( NodeTitle node ) {
 			listView1.Visible = false;
 			panel1.Visible = true;
-
+			m_currentTitle = node;
 
 			checkBox1.Tag = node;
 			checkBox1.Checked = m_config.hasEnableEnbLocal( node.name );
