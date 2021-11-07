@@ -13,6 +13,10 @@
 		public static string UI_CHKBOX_ENBLOCAL             => MainForm.language[ "$UI_CHKBOX_ENBLOCAL" ];
 		public static string UI_FILEPATH                    => MainForm.language[ "$UI_FILEPATH" ];
 		public static string CONTEXT_COM_EMBLOC_RESET       => MainForm.language[ "$CONTEXT_COM_EMBLOC_RESET" ];
+		public static string UI_EXTRACT_CHECKED_FILES       => MainForm.language[ "$UI_EXTRACT_CHECKED_FILES" ];
+		public static string UI_ADD_GAME                    => MainForm.language[ "$UI_ADD_GAME" ];
+		public static string MSG_TXTBOX                     => MainForm.language[ "$MSG_TXTBOX" ];
+		
 	}
 }
 

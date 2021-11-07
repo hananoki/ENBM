@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
+
 namespace ENBM {
 
 	public partial class MainForm : Form {
@@ -17,14 +18,17 @@ namespace ENBM {
 		}
 
 
+
 		/// <summary>
 		/// 最新の情報に更新
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		void toolStripButton_Reload_Click( object sender, EventArgs e ) {
+		void toolStripButton_Click_Reload( object sender, EventArgs e ) {
+			makeAddGameTitleDropDownMenu();
 			initTreeView();
 		}
+
 
 
 		/// <summary>
@@ -32,8 +36,8 @@ namespace ENBM {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		async void toolStripButton_Install_Click( object sender, EventArgs e ) {
-			var steamPath = getSteamFolder();
+		async void toolStripButton_Click_Install( object sender, EventArgs e ) {
+			var steamPath = Utils.getSteamFolder();
 
 			var gamePath = m_selectNodePreset.title.getGameFolderPath(); ;
 
@@ -46,7 +50,7 @@ namespace ENBM {
 
 			toolStripButton_Install.Enabled = false;
 
-			setNotifyText( S.MSG_INSTALL_NOW.format( m_selectNodePreset.name ) );
+			Utils.setNotifyText( S.MSG_INSTALL_NOW.format( m_selectNodePreset.name ) );
 			toolStripProgressBar1.Visible = true;
 			toolStripProgressBar1.Value = 0;
 			toolStripProgressBar1.Step = (int) ( ( 100000.0f / files.Length ) + 0.5f );
@@ -74,14 +78,15 @@ namespace ENBM {
 
 
 			toolStripProgressBar1.Visible = false;
-			setNotifyText( S.MSG_INSTALL.format( m_selectNodePreset.name ) );
+			Utils.setNotifyText( S.MSG_INSTALL.format( m_selectNodePreset.name ) );
 
 			initTreeView();
 		}
 
 
-		void toolStripButton2_Click( object sender, EventArgs e ) {
-			var steamPath = getSteamFolder();
+
+		void toolStripButton_Click_Uninstall( object sender, EventArgs e ) {
+			var steamPath = Utils.getSteamFolder();
 
 			var gamePath = $@"{steamPath}\steamapps\common\{m_selectNodePreset.title.name}";
 
@@ -100,7 +105,7 @@ namespace ENBM {
 				fs.rm( $".{m_selectNodePreset.name}" );
 			}
 
-			setNotifyText( S.UI_UNINSTALL.format( m_selectNodePreset.name ) );
+			Utils.setNotifyText( S.UI_UNINSTALL.format( m_selectNodePreset.name ) );
 
 			initTreeView();
 		}

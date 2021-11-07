@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 
 
+
 namespace ENBM {
 
 	public partial class MainForm : Form {
@@ -65,14 +66,14 @@ namespace ENBM {
 			var info = m_nodeInfos[ treeView1.SelectedNode ];
 			var path = info.getGameFolderPath();
 			shell.startProcess( "explorer", info.getGameFolderPath() );
-			setNotifyText( $"Open: {path}" );
+			Utils.setNotifyText( $"Open: {path}" );
 		}
 
 
 		void プリセットフォルダを開くToolStripMenuItem_Click( object sender, EventArgs e ) {
 			var info = m_nodeInfos[ treeView1.SelectedNode ];
 			shell.startProcess( "explorer", info.fullPath );
-			setNotifyText( $"Open: {info.fullPath}" );
+			Utils.setNotifyText( $"Open: {info.fullPath}" );
 		}
 
 

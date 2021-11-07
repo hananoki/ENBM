@@ -1,7 +1,6 @@
 ﻿using HananokiLib;
-using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,7 +19,22 @@ namespace ENBM {
 			contextMenuStrip2.Items[ 0 ].Text = S.CONTEXT_OPEN_PRESET_FOLDER;
 			contextMenuStrip2.Items[ 1 ].Text = S.CONTEXT_REMOVE_PRESET_FOLDER;
 			contextMenuStrip2.Items[ 3 ].Text = S.CONTEXT_COM_EMBLOC_RESET;
-			checkBox1.Text = S.UI_CHKBOX_ENBLOCAL;
+			button_ExtractArcive.Text = S.UI_EXTRACT_CHECKED_FILES;
+			uiAddGameTitle.Text = S.UI_ADD_GAME;
+		}
+
+
+
+		void makeAddGameTitleDropDownMenu() {
+			var items = uiAddGameTitle.DropDownItems;
+			items.Clear();
+			foreach( var p in m_gameTitleList.m_data ) {
+				if( $"{Helper.s_appPath}\\{p.folderName}".isExistsDirectory() ) continue;
+				var it = items.Add( p.gameName, p.icon );
+				it.Click += onClick_AddGameTitle;
+				it.Tag = p;
+			}
+			uiAddGameTitle.Enabled = items.Count == 0 ? false : true;
 		}
 
 
@@ -65,31 +79,61 @@ namespace ENBM {
 
 
 		void updatePanel() {
-			button1.Enabled = m_config.sevenZipPath.isExistsFile() ? true : false;
+			button_ExtractArcive.Enabled = m_config.sevenZipPath.isExistsFile() ? true : false;
 		}
 
 
-
+		/////////////////////////////////////////
 		void initPanel( NodeTitle node ) {
 			listView1.Visible = false;
 			panel1.Visible = true;
 			m_currentTitle = node;
 
-			checkBox1.Tag = node;
-			checkBox1.Checked = m_config.hasEnableEnbLocal( node.name );
+			linkLabel_Nexus.Tag = m_gameTitleList.get( m_currentTitle.name ).url;
+
+			//checkBox1.Tag = node;
+			//checkBox1.Checked = m_config.hasEnableEnbLocal( node.name );
 
 			label2.Text = m_config.lastSelectTitle;
+
+			var gg = m_gameTitleList.get( node.name );
+			var filter = gg.enbFilter.isEmpty() ? "" : gg.enbFilter;
+			bool filterCheck = !filter.isEmpty();
 
 			listView2.Items.Clear();
 			var dirpath = $@"{Helper.s_appPath }\.enbseries";
 			if( dirpath.isExistsDirectory() ) {
+				int i = 0;
 				foreach( var p in Directory.GetFiles( dirpath, "*.zip" ) ) {
+					if( filterCheck ) {
+						if( !p.getFileName().Contains( filter ) ) continue;
+					}
+
 					var item = new ListViewItem( p.getBaseName() );
 					item.Tag = new FilePathTag {
 						fullpath = p,
 						nodeTitle = node,
 					};
+					int imageInex;
+					if( m_imageIndexMap.TryGetValue( p.getExt(), out imageInex ) ) {
+						item.ImageIndex = imageInex;
+					}
+					else {
+						var bmp = icon.file( p );
+						imageList2.Images.Add( bmp );
+						m_imageIndexMap.Add( p.getExt(), imageList2.Images.Count - 1 );
+						item.ImageIndex = imageList2.Images.Count - 1;
+					}
+
+					if( i.Has( 0x01 ) ) {
+						item.BackColor = Helper.LVBKColor;
+					}
+					else {
+						item.BackColor = SystemColors.Window;
+					}
+
 					listView2.Items.Add( item );
+					i++;
 				}
 				listView2.Columns[ 0 ].Width = listView2.Width - 4;
 			}
@@ -98,19 +142,40 @@ namespace ENBM {
 			listView3.Items.Clear();
 			var dirpath2 = $@"{Helper.s_appPath }\{node.name}\.presets";
 			if( dirpath2.isExistsDirectory() ) {
+				int i = 0;
 				foreach( var p in Directory.GetFiles( dirpath2 ) ) {
 					var item = new ListViewItem( p.getBaseName() );
 					item.Tag = new FilePathTag {
 						fullpath = p,
 						nodeTitle = node,
 					};
+
+					int imageInex;
+					if( m_imageIndexMap.TryGetValue( p.getExt(), out imageInex ) ) {
+						item.ImageIndex = imageInex;
+					}
+					else {
+						var bmp = icon.file( p );
+						imageList2.Images.Add( bmp );
+						m_imageIndexMap.Add( p.getExt(), imageList2.Images.Count - 1 );
+						item.ImageIndex = imageList2.Images.Count - 1;
+					}
+					if( i.Has( 0x01 ) ) {
+						item.BackColor = Helper.LVBKColor;
+					}
+					else {
+						item.BackColor = SystemColors.Window;
+					}
+
 					listView3.Items.Add( item );
+					i++;
 				}
 				listView3.Columns[ 0 ].Width = listView3.Width - 4;
 			}
 
 			updatePanel();
 		}
+
 
 
 		void rollbackWindow() {
@@ -120,65 +185,12 @@ namespace ENBM {
 		}
 
 
+
 		void backupWindow() {
 			m_config.x = Location.X;
 			m_config.y = Location.Y;
 			m_config.width = Width;
 			m_config.height = Height;
-		}
-
-
-		void startFilePath( string filepath ) {
-			if( string.IsNullOrEmpty( filepath ) ) return;
-
-			System.Diagnostics.Process.Start( $"{filepath.quote()}" );
-		}
-
-
-		public static string getSteamFolder() {
-			using( var regkey = Registry.CurrentUser.OpenSubKey( @"Software\Valve\Steam", false ) ) {
-				//キーが存在しないときは null が返される
-				if( regkey == null ) {
-					Debug.Log( $@"Software\Valve\Steam None" );
-					return "";
-				}
-				string stringValue = (string) regkey.GetValue( "SteamPath" );
-
-				return stringValue;
-			}
-		}
-
-
-
-		public void clearNotifyText() {
-			toolStripStatusLabel1.Text = "";
-			toolStripStatusLabel1.Image = null;
-		}
-
-
-		public void setNotifyText( string text = "", NotifyType type = NotifyType.Info, int interval = 10000 ) {
-			Invoke( new Action( () => {
-				toolStripStatusLabel1.Text = text;
-				switch( type ) {
-				case NotifyType.None:
-					toolStripStatusLabel1.Image = null;
-					break;
-				case NotifyType.Info:
-					toolStripStatusLabel1.Image = icon.info;
-					break;
-				case NotifyType.Warning:
-					toolStripStatusLabel1.Image = icon.warning;
-					break;
-				case NotifyType.Error:
-					toolStripStatusLabel1.Image = icon.error;
-					break;
-				}
-				timer.Stop();
-				if( 1 <= interval ) {
-					timer.Interval = interval;
-					timer.Start(); // timer.Start()と同じ
-				}
-			} ) );
 		}
 
 	} // class

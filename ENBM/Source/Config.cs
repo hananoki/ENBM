@@ -14,8 +14,11 @@ namespace ENBM {
 		public string lastSelectTitle;
 		public string lastSelectGUID;
 
-		public string sevenZipPath;
+		public string shortCutFilePath;
+		public string shortCutFileArg;
 
+		public string sevenZipPath;
+		public int flag;
 
 		public List<string> foldTitle = new List<string>();
 
@@ -38,12 +41,25 @@ namespace ENBM {
 
 			find.flag.Toggle( D.ENABLE_ENBLOCAL, flag );
 		}
+
+
+		public static Config load() {
+			var config = new Config();
+			Helper.ReadJson( ref config, Helper.configPath );
+			return config;
+		}
+
+		public  void save( ) {
+			Helper.WriteJson( this );
+		}
+
 	} // class
 
 
 	public class ConfigTitle {
 		public string name;
 		public int flag;
+		public string updateTime;
 	} // class
 
 }

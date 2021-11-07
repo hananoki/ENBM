@@ -40,6 +40,8 @@ namespace ENBM {
 
 		public static Dictionary<TreeNode, NodeInfo> nodeInfos => m_nodeInfos;
 
+		Dictionary<string, int> m_imageIndexMap = new Dictionary<string, int>();
+
 		bool exceptionError;
 
 
@@ -47,18 +49,19 @@ namespace ENBM {
 
 		NodeTitle m_currentTitle;
 
+		GameTitleList m_gameTitleList;
 
+
+
+		/////////////////////////////////////////
 		public MainForm() {
 			instance = this;
 			InitializeComponent();
 		}
 
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+
+		/////////////////////////////////////////
 		void Form1_Load( object sender, EventArgs e ) {
 			Font = SystemFonts.IconTitleFont;
 			Text = $"{Text} {Helper.version}";
@@ -67,6 +70,13 @@ namespace ENBM {
 			Helper.ReadJson( ref m_config, Helper.configPath );
 			rollbackWindow();
 
+			// レイアウトの微調整
+			var pt = splitContainer1.Location;
+			pt.Y = 28;
+			splitContainer1.Location = pt;
+
+
+			// 必須読み込み処理、失敗したら終了
 			try {
 				m_language = new Language();
 			}
@@ -76,12 +86,18 @@ namespace ENBM {
 				Close();
 				return;
 			}
-			if( !$@"{Helper.s_appPath}\.icons".isExistsFile() ) {
-				MessageBox.Show( "\".icons\" is Not Found.", "Error" );
+			if( !$@"{Helper.s_appPath}\.gametitle".isExistsFile() ) {
+				MessageBox.Show( "\".gametitle\" is Not Found.", "Error" );
 				exceptionError = true;
 				Close();
 				return;
 			}
+
+
+			// 各種UIのアイテム処理
+
+			toolStripStatusLabel1.Text = "";
+			label2.Text = "";
 
 			toolStripComboBox1.Items.Clear();
 			var lst = m_language.languageNames;
@@ -95,19 +111,13 @@ namespace ENBM {
 			toolStripProgressBar1.Visible = false;
 
 
-			m_iconIndexs = new Dictionary<string, int>();
-			var steamPath = getSteamFolder();
-			foreach( var t in File.ReadAllLines( $@"{Helper.s_appPath}\.icons" ) ) {
-				var tt = t.Split( '\t' );
-				var exepath = $@"{steamPath}\steamapps\common\{tt[ 0 ]}\{tt[ 1 ]}".separatorToOS();
-				if( !exepath.isExistsFile() ) continue;
+			m_gameTitleList = new GameTitleList();
+			m_gameTitleList.load( $@"{Helper.s_appPath}\.gametitle" );
 
-				var shinfo = new Win32.SHFILEINFO();
-				IntPtr hSuccess = Win32.SHGetFileInfo( exepath, 0, ref shinfo, (uint) Marshal.SizeOf( shinfo ), Win32.SHGFI_ICON | Win32.SHGFI_SMALLICON );
-				if( hSuccess != IntPtr.Zero ) {
-					imageList1.Images.Add( Icon.FromHandle( shinfo.hIcon ).ToBitmap() );
-					m_iconIndexs.Add( tt[ 0 ], imageList1.Images.Count - 1 );
-				}
+			m_iconIndexs = new Dictionary<string, int>();
+			foreach( var p in m_gameTitleList.m_data ) {
+				imageList1.Images.Add( p.icon );
+				m_iconIndexs.Add( p.folderName, imageList1.Images.Count - 1 );
 			}
 
 
@@ -118,26 +128,33 @@ namespace ENBM {
 				timer.Stop();
 			} );
 
-			var pt = splitContainer1.Location;
-			pt.Y = 28;
-			splitContainer1.Location = pt;
-
-			toolStripStatusLabel1.Text = "";
 
 			initTreeView();
 
-			updateLanguage();
+			makeAddGameTitleDropDownMenu();
 
-			sound.addData( "start", Helper.s_appPath + "\\startup.wav" );
-			sound.play( "start" );
+			//sound.addData( "start", Helper.s_appPath + "\\startup.wav" );
+			//sound.play( "start" );
 
 			var enblocalPath = $@"{Helper.s_appPath}\.enbseries\enblocal.ini";
 			m_enbLocal = FileENBLocal.load( enblocalPath );
+
+			var pw=listView3.Size.Width / 2;
+			var w =label4.Size.Width/2;
+			label4.Location = new Point(pw-w, 50);
+			linkLabel_ENB.Tag = "http://enbdev.com/news.html";
+
+			updateLanguage();
+
+			if(m_config.shortCutFilePath.isEmpty()) {
+				toolStripButton1.Visible = false;
+			}
 		}
 
 
 
-		private void MainForm_FormClosing( object sender, FormClosingEventArgs e ) {
+		/////////////////////////////////////////
+		void MainForm_FormClosing( object sender, FormClosingEventArgs e ) {
 			if( exceptionError ) return;
 
 			var foldList = new List<string>();
@@ -148,10 +165,13 @@ namespace ENBM {
 			}
 			m_config.foldTitle = foldList;
 			backupWindow();
-			Helper.WriteJson( m_config );
+
+			m_config.save();
 		}
 
 
+
+		/////////////////////////////////////////
 		void Form1_KeyDown( object sender, KeyEventArgs e ) {
 			if( e.KeyCode == Keys.F11 ) {
 				LogWindow.Visible = !LogWindow.Visible;
@@ -159,88 +179,42 @@ namespace ENBM {
 		}
 
 
-		void checkBox1_CheckStateChanged( object sender, EventArgs e ) {
-			var chk = (CheckBox) sender;
-			var node = (NodeTitle) chk.Tag;
 
-			m_config.setEnableEnbLocal( node.name, chk.Checked );
+		//void checkBox1_CheckStateChanged( object sender, EventArgs e ) {
+		//	var chk = (CheckBox) sender;
+		//	var node = (NodeTitle) chk.Tag;
 
-			if( !chk.Checked ) return;
+		//	m_config.setEnableEnbLocal( node.name, chk.Checked );
 
-			var path = $@"{node.fullPath}\.override\enblocal.ini";
+		//	if( !chk.Checked ) return;
 
-			if( path.isExistsFile() ) return;
+		//	var path = $@"{node.fullPath}\.override\enblocal.ini";
 
-			fs.mkDir( path.getDirectoryName() );
-			File.WriteAllText( path, "" );
-		}
+		//	if( path.isExistsFile() ) return;
 
-
-		void toolStripButton1_Click( object sender, EventArgs e ) {
-			var a = new Settings();
-			a.ShowDialog();
-			updatePanel();
-		}
+		//	fs.mkDir( path.getDirectoryName() );
+		//	File.WriteAllText( path, "" );
+		//}
 
 
-		void button1_Click( object sender, EventArgs e ) {
-			void extract( ListView lv, string _outputPath ) {
-				foreach( ListViewItem p in lv.Items ) {
-					if( !p.Checked ) continue;
-					var tag = (FilePathTag) p.Tag;
-					shell.SetProcessEnvironmentPath( m_config.sevenZipPath.getDirectoryName() );
-					var outputDirName = _outputPath;
-					fs.mkDir( outputDirName );
-					shell.startProcess( "7z.exe", $@"x -o{outputDirName.quote()} {tag.fullpath.quote()}" );
-				}
-			}
-			var folder = "New Preset";
-			foreach( ListViewItem pp in listView3.Items ) {
-				if( !pp.Checked ) continue;
-				folder = pp.Text;
-				break;
-			}
-			var outputPath = $@"{m_currentTitle.fullPath}\{folder}";
-			if( outputPath.isExistsDirectory() ) {
-				int count = 1;
-				while(true) {
-					var newPath = $"{outputPath}{count}";
-					if( !newPath.isExistsDirectory() ) {
-						outputPath = newPath;
-						break;
-					}
-					count++;
-				} 
-			}
-			extract( listView2, outputPath );
-			extract( listView3, outputPath );
-
-			initTreeView();
-
-			foreach(var p in m_titleTree ) {
-				if( p.name == m_config.lastSelectTitle ) {
-					var find=p.presets.Find( x => x.fullPath == outputPath );
-					if( find !=null) {
-						treeView1.SelectedNode = find.node;
-						treeView1.Focus();
-					}
-					break;
-				}
-			}
-		}
-
-
+		/////////////////////////////////////////
 		private void wINDOWToolStripMenuItem_Click( object sender, EventArgs e ) {
 			var preset = contextMenuStrip2.Tag as NodePreset;
 			if( preset == null ) return;
 			m_enbLocal?.replace( $@"{preset.fullPath}\enblocal.ini", typeof( FileENBLocal.WINDOW ) );
 		}
 
+
+		/////////////////////////////////////////
 		private void iNPUTToolStripMenuItem_Click( object sender, EventArgs e ) {
 			var preset = contextMenuStrip2.Tag as NodePreset;
 			if( preset == null ) return;
 			m_enbLocal?.replace( $@"{preset.fullPath}\enblocal.ini", typeof( FileENBLocal.INPUT ) );
 		}
 
+
+		void toolStripButton1_Click( object sender, EventArgs e ) {
+			System.Diagnostics.Process.Start( m_config.shortCutFilePath, m_config.shortCutFileArg );
+		}
 	}
 }

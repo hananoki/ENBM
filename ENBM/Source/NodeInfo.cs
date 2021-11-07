@@ -8,9 +8,7 @@ using System.Windows.Forms;
 
 namespace ENBM {
 
-	/// <summary>
-	/// 
-	/// </summary>
+	/////////////////////////////////////////
 	public class NodeInfo {
 		public string name;
 		public string fullPath;
@@ -23,9 +21,7 @@ namespace ENBM {
 
 
 
-	/// <summary>
-	/// 
-	/// </summary>
+	/////////////////////////////////////////
 	public class NodeTitle : NodeInfo {
 
 		public List<NodePreset> presets;
@@ -52,7 +48,7 @@ namespace ENBM {
 				MainForm.nodeInfos.Add( treeNnode, a );
 			}
 
-			var steamPath = MainForm.getSteamFolder();
+			var steamPath = Utils.getSteamFolder();
 			var installPath = $@"{steamPath}\steamapps\common\{name}";
 			if( installPath.isExistsDirectory() ) {
 				var metaPath = $@"{installPath}\.enbm";
@@ -71,18 +67,18 @@ namespace ENBM {
 		}
 
 
+
 		public override string getGameFolderPath() {
-			var steamPath = MainForm.getSteamFolder();
+			var steamPath = Utils.getSteamFolder();
 			var path = $@"{steamPath}\steamapps\common\{name}";
 			return path.separatorToOS();
 		}
+
 	} // class
 
 
 
-	/// <summary>
-	/// 
-	/// </summary>
+	/////////////////////////////////////////
 	public class NodePreset : NodeInfo {
 
 		public NodeTitle title;
