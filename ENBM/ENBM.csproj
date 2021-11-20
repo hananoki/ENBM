@@ -71,31 +71,31 @@
       <Link>HananokiLib\JsonUtils.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\IJsonWrapper.cs">
-      <Link>LitJson\IJsonWrapper.cs</Link>
+      <Link>HananokiLib/LitJson\IJsonWrapper.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\JsonData.cs">
-      <Link>LitJson\JsonData.cs</Link>
+      <Link>HananokiLib/LitJson\JsonData.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\JsonException.cs">
-      <Link>LitJson\JsonException.cs</Link>
+      <Link>HananokiLib/LitJson\JsonException.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\JsonMapper.cs">
-      <Link>LitJson\JsonMapper.cs</Link>
+      <Link>HananokiLib/LitJson\JsonMapper.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\JsonMockWrapper.cs">
-      <Link>LitJson\JsonMockWrapper.cs</Link>
+      <Link>HananokiLib/LitJson\JsonMockWrapper.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\JsonReader.cs">
-      <Link>LitJson\JsonReader.cs</Link>
+      <Link>HananokiLib/LitJson\JsonReader.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\JsonWriter.cs">
-      <Link>LitJson\JsonWriter.cs</Link>
+      <Link>HananokiLib/LitJson\JsonWriter.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\Lexer.cs">
-      <Link>LitJson\Lexer.cs</Link>
+      <Link>HananokiLib/LitJson\Lexer.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\LitJson\ParserToken.cs">
-      <Link>LitJson\ParserToken.cs</Link>
+      <Link>HananokiLib/LitJson\ParserToken.cs</Link>
     </Compile>
     <Compile Include="..\HananokiLib\Log.cs">
       <Link>HananokiLib\Log.cs</Link>
@@ -127,6 +127,14 @@
     <Compile Include="Source\Extensions.cs" />
     <Compile Include="Source\FileENBLocal.cs" />
     <Compile Include="Source\GameTitleList.cs" />
+    <Compile Include="Source\IniEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\IniEditorForm.Designer.cs">
+      <DependentUpon>IniEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Source\IniEnbSeries.cs" />
+    <Compile Include="Source\IniFile.cs" />
     <Compile Include="Source\Language.cs" />
     <Compile Include="Source\ListViewItemTag.cs" />
     <Compile Include="Source\MainForm.cs">
@@ -161,6 +169,9 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\Utils.cs" />
+    <EmbeddedResource Include="Source\IniEditorForm.resx">
+      <DependentUpon>IniEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Source\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

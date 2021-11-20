@@ -11,18 +11,23 @@ namespace ENBM {
 	public partial class MainForm : Form {
 
 		void updateLanguage() {
-			toolStripLabel_Language.Text = S.UI_LANG;
-			toolStripButton_Install.Text = S.UI_INSTALL;
+			toolStripLabel_Language.Text   = S.UI_LANG;
+			toolStripButton_Install.Text   = S.UI_INSTALL;
 			toolStripButton_Uninstall.Text = S.UI_UNINSTALL;
-			toolStripButton_Reload.Text = S.UI_REFRESH;
-			contextMenuStrip1.Items[ 0 ].Text = S.CONTEXT_OPEN_GAME_FOLDER;
-			contextMenuStrip2.Items[ 0 ].Text = S.CONTEXT_OPEN_PRESET_FOLDER;
-			contextMenuStrip2.Items[ 1 ].Text = S.CONTEXT_REMOVE_PRESET_FOLDER;
-			contextMenuStrip2.Items[ 3 ].Text = S.CONTEXT_COM_EMBLOC_RESET;
-			button_ExtractArcive.Text = S.UI_EXTRACT_CHECKED_FILES;
-			uiAddGameTitle.Text = S.UI_ADD_GAME;
+			toolStripButton_Reload.Text    = S.UI_REFRESH;
+			cms_Title.Items[ 0 ].Text      = S.CONTEXT_OPEN_GAME_FOLDER;
+			cms_Preset.Items[ 0 ].Text     = S.CONTEXT_OPEN_PRESET_FOLDER;
+			cms_Preset.Items[ 1 ].Text     = S.CONTEXT_REMOVE_PRESET_FOLDER;
+			cms_Preset.Items[ 3 ].Text     = S.CONTEXT_COM_EMBLOC_RESET;
+			button_ExtractArcive.Text      = S.UI_EXTRACT_CHECKED_FILES;
+			uiAddGameTitle.Text            = S.UI_ADD_GAME;
+			listView1.Columns[ 0 ].Text    = S.UI_FILEPATH;
 		}
 
+
+		public bool hasInstalled() {
+			return m_selectNodePreset.node.ImageIndex == 2;
+		}
 
 
 		void makeAddGameTitleDropDownMenu() {
@@ -82,10 +87,23 @@ namespace ENBM {
 			button_ExtractArcive.Enabled = m_config.sevenZipPath.isExistsFile() ? true : false;
 		}
 
+		int getFileIconIndex( string path ) {
+			int imageInex;
+			if( m_imageIndexMap.TryGetValue( path.getExt(), out imageInex ) ) {
+			}
+			else {
+				var bmp = icon.file( path );
+				imglst_FilePath.Images.Add( bmp );
+				m_imageIndexMap.Add( path.getExt(), imglst_FilePath.Images.Count - 1 );
+				imageInex = imglst_FilePath.Images.Count - 1;
+			}
+			return imageInex;
+		}
+
 
 		/////////////////////////////////////////
 		void initPanel( NodeTitle node ) {
-			listView1.Visible = false;
+			panel2.Visible = false;
 			panel1.Visible = true;
 			m_currentTitle = node;
 
@@ -114,16 +132,16 @@ namespace ENBM {
 						fullpath = p,
 						nodeTitle = node,
 					};
-					int imageInex;
-					if( m_imageIndexMap.TryGetValue( p.getExt(), out imageInex ) ) {
-						item.ImageIndex = imageInex;
-					}
-					else {
-						var bmp = icon.file( p );
-						imageList2.Images.Add( bmp );
-						m_imageIndexMap.Add( p.getExt(), imageList2.Images.Count - 1 );
-						item.ImageIndex = imageList2.Images.Count - 1;
-					}
+					item.ImageIndex = getFileIconIndex( p );
+					//if( m_imageIndexMap.TryGetValue( p.getExt(), out imageInex ) ) {
+					//	item.ImageIndex = imageInex;
+					//}
+					//else {
+					//	var bmp = icon.file( p );
+					//	imageList2.Images.Add( bmp );
+					//	m_imageIndexMap.Add( p.getExt(), imageList2.Images.Count - 1 );
+					//	item.ImageIndex = imageList2.Images.Count - 1;
+					//}
 
 					if( i.Has( 0x01 ) ) {
 						item.BackColor = Helper.LVBKColor;
@@ -156,9 +174,9 @@ namespace ENBM {
 					}
 					else {
 						var bmp = icon.file( p );
-						imageList2.Images.Add( bmp );
-						m_imageIndexMap.Add( p.getExt(), imageList2.Images.Count - 1 );
-						item.ImageIndex = imageList2.Images.Count - 1;
+						imglst_FilePath.Images.Add( bmp );
+						m_imageIndexMap.Add( p.getExt(), imglst_FilePath.Images.Count - 1 );
+						item.ImageIndex = imglst_FilePath.Images.Count - 1;
 					}
 					if( i.Has( 0x01 ) ) {
 						item.BackColor = Helper.LVBKColor;

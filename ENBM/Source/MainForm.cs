@@ -52,6 +52,10 @@ namespace ENBM {
 		GameTitleList m_gameTitleList;
 
 
+		List<ListViewItem> m_fileItems;
+
+		
+
 
 		/////////////////////////////////////////
 		public MainForm() {
@@ -96,6 +100,11 @@ namespace ENBM {
 
 			// 各種UIのアイテム処理
 
+			m_fileItems = new List<ListViewItem>();
+			listView1.SetDoubleBuffered( true );
+			//treeView1.SetDoubleBuffered( true );
+
+
 			toolStripStatusLabel1.Text = "";
 			label2.Text = "";
 
@@ -116,8 +125,9 @@ namespace ENBM {
 
 			m_iconIndexs = new Dictionary<string, int>();
 			foreach( var p in m_gameTitleList.m_data ) {
-				imageList1.Images.Add( p.icon );
-				m_iconIndexs.Add( p.folderName, imageList1.Images.Count - 1 );
+				if( p.icon == null ) continue;
+				imglst_Tree.Images.Add( p.icon );
+				m_iconIndexs.Add( p.folderName, imglst_Tree.Images.Count - 1 );
 			}
 
 
@@ -199,7 +209,7 @@ namespace ENBM {
 
 		/////////////////////////////////////////
 		private void wINDOWToolStripMenuItem_Click( object sender, EventArgs e ) {
-			var preset = contextMenuStrip2.Tag as NodePreset;
+			var preset = cms_Preset.Tag as NodePreset;
 			if( preset == null ) return;
 			m_enbLocal?.replace( $@"{preset.fullPath}\enblocal.ini", typeof( FileENBLocal.WINDOW ) );
 		}
@@ -207,7 +217,7 @@ namespace ENBM {
 
 		/////////////////////////////////////////
 		private void iNPUTToolStripMenuItem_Click( object sender, EventArgs e ) {
-			var preset = contextMenuStrip2.Tag as NodePreset;
+			var preset = cms_Preset.Tag as NodePreset;
 			if( preset == null ) return;
 			m_enbLocal?.replace( $@"{preset.fullPath}\enblocal.ini", typeof( FileENBLocal.INPUT ) );
 		}
@@ -216,5 +226,7 @@ namespace ENBM {
 		void toolStripButton1_Click( object sender, EventArgs e ) {
 			System.Diagnostics.Process.Start( m_config.shortCutFilePath, m_config.shortCutFileArg );
 		}
+
+
 	}
 }

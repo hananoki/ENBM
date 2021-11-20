@@ -9,6 +9,11 @@ namespace ENBM {
 		public int x;
 		public int y;
 
+		public int editorX = 0;
+		public int editorY = 0;
+		public int editorWidth = 800;
+		public int editorHeight = 600;
+
 		public string langName;
 
 		public string lastSelectTitle;
@@ -31,6 +36,8 @@ namespace ENBM {
 
 			return find.flag.Has( D.ENABLE_ENBLOCAL );
 		}
+
+
 		public void setEnableEnbLocal( string titleName, bool flag ) {
 			var find = title.Find( x => x.name == titleName );
 			if( find == null ) {

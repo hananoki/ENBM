@@ -30,9 +30,30 @@ namespace ENBM {
 		}
 
 
+		public async void copyFiles() {
+			var gamePath = m_selectNodePreset.title.getGameFolderPath(); ;
+
+			// コピー先のディレクトリが存在しない
+			if( !gamePath.isExistsDirectory() ) return;
+
+			Environment.CurrentDirectory = gamePath;
+
+			var path = m_selectNodePreset.fullPath;
+			var files = Directory.GetFiles( path, "*", SearchOption.AllDirectories );
+
+			await Task.Run( () => {
+				foreach( var p in files ) {
+					var pname = p.Remove( 0, path.Length + 1 );
+					if( Helper.hasDependUpdate( p, pname ) ) {
+						fs.cp( p, pname, true );
+					}
+				}
+			} );
+		}
+
 
 		/// <summary>
-		/// 
+		/// インストール
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -91,13 +112,9 @@ namespace ENBM {
 			var gamePath = $@"{steamPath}\steamapps\common\{m_selectNodePreset.title.name}";
 
 			if( gamePath.isExistsDirectory() ) {
-				//Debug.Log( fo4path );
 				Environment.CurrentDirectory = gamePath;
 
 				foreach( var p in m_selectNodePreset.m_targetFileName ) {
-					//if(p.isExistsFile()) {
-					//	Debug.Log( p );
-					//}
 					fs.rm( p );
 				}
 

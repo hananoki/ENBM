@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ENBM {
 
-	/////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////
 	public class NodeInfo {
 		public string name;
 		public string fullPath;
@@ -21,13 +21,14 @@ namespace ENBM {
 
 
 
-	/////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////
 	public class NodeTitle : NodeInfo {
 
 		public List<NodePreset> presets;
 		public NodePreset installed;
 
 
+		/////////////////////////////////////////
 		public TreeNode makeNode() {
 			node = new TreeNode( name );
 
@@ -67,7 +68,7 @@ namespace ENBM {
 		}
 
 
-
+		/////////////////////////////////////////
 		public override string getGameFolderPath() {
 			var steamPath = Utils.getSteamFolder();
 			var path = $@"{steamPath}\steamapps\common\{name}";
@@ -78,7 +79,7 @@ namespace ENBM {
 
 
 
-	/////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////
 	public class NodePreset : NodeInfo {
 
 		public NodeTitle title;
@@ -87,6 +88,7 @@ namespace ENBM {
 		public string GUID;
 
 
+		/////////////////////////////////////////
 		public TreeNode makeNode() {
 			node = new TreeNode( name );
 			node.ImageIndex = 1;
@@ -104,5 +106,6 @@ namespace ENBM {
 			}
 			return node;
 		}
+
 	} // class
 }

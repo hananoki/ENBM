@@ -1,5 +1,6 @@
 ﻿using HananokiLib;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 
@@ -12,17 +13,24 @@ namespace ENBM {
 			treeView1.SelectedNode = e.Node;
 			if( e.Button == MouseButtons.Right ) {
 				if( m_nodeInfos[ e.Node ].GetType() == typeof( NodeTitle ) ) {
-					contextMenuStrip1.Show( Cursor.Position );
+					cms_Title.Show( Cursor.Position );
 				}
 				else {
-					contextMenuStrip2.Tag = m_nodeInfos[ e.Node ];
-					contextMenuStrip2.Items[ 3 ].Enabled = m_enbLocal != null ? true : false;
-					contextMenuStrip2.Show( Cursor.Position );
+					cms_Preset.Tag = m_nodeInfos[ e.Node ];
+					cms_Preset.Items[ 3 ].Enabled = m_enbLocal != null ? true : false;
+					cms_Preset.Show( Cursor.Position );
 				}
 			}
 		}
 
-
+		void nodeoff(TreeNodeCollection nodes) {
+			if( nodes == null ) return;
+			if( nodes.Count == 0 ) return;
+			foreach( TreeNode n in nodes ) {
+				nodeoff( n.Nodes );
+				n.BackColor = SystemColors.Window;
+			}
+		}
 
 		void treeView1_AfterSelect( object sender, TreeViewEventArgs e ) {
 
@@ -36,7 +44,7 @@ namespace ENBM {
 				return;
 			}
 
-			listView1.Visible = true;
+			panel2.Visible = true;
 			panel1.Visible = false;
 			m_selectNodePreset = (NodePreset) nodeInfo;
 

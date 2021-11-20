@@ -1,4 +1,6 @@
-﻿namespace ENBM {
+﻿using HananokiLib;
+
+namespace ENBM {
 	partial class Settings {
 		/// <summary>
 		/// Required designer variable.
@@ -25,7 +27,7 @@
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
 			this.label1 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.textBox1 = new TextBoxGuide();
 			this.button1 = new System.Windows.Forms.Button();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.button2 = new System.Windows.Forms.Button();
@@ -47,11 +49,6 @@
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(306, 19);
 			this.textBox1.TabIndex = 1;
-			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-			this.textBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
-			this.textBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox1_DragEnter);
-			this.textBox1.Enter += new System.EventHandler(this.textBox1_Enter);
-			this.textBox1.Leave += new System.EventHandler(this.textBox1_Leave);
 			// 
 			// button1
 			// 
@@ -111,7 +108,7 @@
 		#endregion
 
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBox1;
+		private TextBoxGuide textBox1;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.Button button2;

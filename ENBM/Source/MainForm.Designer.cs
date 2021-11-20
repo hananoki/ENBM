@@ -27,14 +27,17 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.imglst_Tree = new System.Windows.Forms.ImageList(this.components);
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.listView1 = new System.Windows.Forms.ListView();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.imglst_FilePath = new System.Windows.Forms.ImageList(this.components);
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panelR_Center = new System.Windows.Forms.Panel();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.label5 = new System.Windows.Forms.Label();
 			this.listView2 = new System.Windows.Forms.ListView();
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.imageList2 = new System.Windows.Forms.ImageList(this.components);
 			this.label1 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.listView3 = new System.Windows.Forms.ListView();
@@ -46,8 +49,6 @@
 			this.linkLabel_ENB = new System.Windows.Forms.LinkLabel();
 			this.panelR_Bottom = new System.Windows.Forms.Panel();
 			this.button_ExtractArcive = new System.Windows.Forms.Button();
-			this.listView1 = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripButton_Uninstall = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Install = new System.Windows.Forms.ToolStripButton();
@@ -64,9 +65,9 @@
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.cms_Title = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ゲームフォルダを開くToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.cms_Preset = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.プリセットフォルダを開くToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.プリセットを削除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -78,6 +79,7 @@
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			this.panel2.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.panelR_Center.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -88,8 +90,8 @@
 			this.panelR_Bottom.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
-			this.contextMenuStrip1.SuspendLayout();
-			this.contextMenuStrip2.SuspendLayout();
+			this.cms_Title.SuspendLayout();
+			this.cms_Preset.SuspendLayout();
 			this.panelDockCenter.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -108,7 +110,7 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.panel1);
-			this.splitContainer1.Panel2.Controls.Add(this.listView1);
+			this.splitContainer1.Panel2.Controls.Add(this.panel2);
 			this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(0, 2, 4, 2);
 			this.splitContainer1.Size = new System.Drawing.Size(740, 342);
 			this.splitContainer1.SplitterDistance = 185;
@@ -118,8 +120,9 @@
 			// 
 			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView1.FullRowSelect = true;
+			this.treeView1.HideSelection = false;
 			this.treeView1.ImageIndex = 0;
-			this.treeView1.ImageList = this.imageList1;
+			this.treeView1.ImageList = this.imglst_Tree;
 			this.treeView1.Location = new System.Drawing.Point(4, 2);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.SelectedImageIndex = 0;
@@ -129,13 +132,53 @@
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
 			this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
 			// 
-			// imageList1
+			// imglst_Tree
 			// 
-			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			this.imageList1.Images.SetKeyName(0, "ゲームの無料アイコン.png");
-			this.imageList1.Images.SetKeyName(1, "スライドボタンアイコン4.png");
-			this.imageList1.Images.SetKeyName(2, "スライドボタンアイコン1.png");
+			this.imglst_Tree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imglst_Tree.ImageStream")));
+			this.imglst_Tree.TransparentColor = System.Drawing.Color.Transparent;
+			this.imglst_Tree.Images.SetKeyName(0, "ゲームの無料アイコン.png");
+			this.imglst_Tree.Images.SetKeyName(1, "スライドボタンアイコン4.png");
+			this.imglst_Tree.Images.SetKeyName(2, "スライドボタンアイコン1.png");
+			// 
+			// panel2
+			// 
+			this.panel2.Controls.Add(this.listView1);
+			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel2.Location = new System.Drawing.Point(0, 2);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(547, 338);
+			this.panel2.TabIndex = 3;
+			// 
+			// listView1
+			// 
+			this.listView1.AllowDrop = true;
+			this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+			this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listView1.FullRowSelect = true;
+			this.listView1.GridLines = true;
+			this.listView1.HideSelection = false;
+			this.listView1.Location = new System.Drawing.Point(0, 0);
+			this.listView1.Name = "listView1";
+			this.listView1.Size = new System.Drawing.Size(547, 338);
+			this.listView1.SmallImageList = this.imglst_FilePath;
+			this.listView1.TabIndex = 1;
+			this.listView1.UseCompatibleStateImageBehavior = false;
+			this.listView1.View = System.Windows.Forms.View.Details;
+			this.listView1.VirtualMode = true;
+			this.listView1.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.onRetrieveVirtualItem);
+			this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "ファイルパス";
+			this.columnHeader1.Width = 371;
+			// 
+			// imglst_FilePath
+			// 
+			this.imglst_FilePath.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+			this.imglst_FilePath.ImageSize = new System.Drawing.Size(16, 16);
+			this.imglst_FilePath.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// panel1
 			// 
@@ -208,7 +251,7 @@
 			this.listView2.MultiSelect = false;
 			this.listView2.Name = "listView2";
 			this.listView2.Size = new System.Drawing.Size(241, 273);
-			this.listView2.SmallImageList = this.imageList2;
+			this.listView2.SmallImageList = this.imglst_FilePath;
 			this.listView2.TabIndex = 4;
 			this.listView2.UseCompatibleStateImageBehavior = false;
 			this.listView2.View = System.Windows.Forms.View.Details;
@@ -216,12 +259,6 @@
 			this.listView2.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView_DragEnter);
 			this.listView2.DragOver += new System.Windows.Forms.DragEventHandler(this.listView_DragEnter);
 			this.listView2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listViewR_MouseClick);
-			// 
-			// imageList2
-			// 
-			this.imageList2.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-			this.imageList2.ImageSize = new System.Drawing.Size(16, 16);
-			this.imageList2.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// label1
 			// 
@@ -261,7 +298,7 @@
 			this.listView3.MultiSelect = false;
 			this.listView3.Name = "listView3";
 			this.listView3.Size = new System.Drawing.Size(302, 273);
-			this.listView3.SmallImageList = this.imageList2;
+			this.listView3.SmallImageList = this.imglst_FilePath;
 			this.listView3.TabIndex = 8;
 			this.listView3.UseCompatibleStateImageBehavior = false;
 			this.listView3.View = System.Windows.Forms.View.Details;
@@ -353,29 +390,6 @@
 			this.button_ExtractArcive.Text = "チェックしたファイルを展開する";
 			this.button_ExtractArcive.UseVisualStyleBackColor = true;
 			this.button_ExtractArcive.Click += new System.EventHandler(this.onClick_ExtractArcive);
-			// 
-			// listView1
-			// 
-			this.listView1.AllowDrop = true;
-			this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-			this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.listView1.FullRowSelect = true;
-			this.listView1.GridLines = true;
-			this.listView1.HideSelection = false;
-			this.listView1.Location = new System.Drawing.Point(0, 2);
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(547, 338);
-			this.listView1.TabIndex = 1;
-			this.listView1.UseCompatibleStateImageBehavior = false;
-			this.listView1.View = System.Windows.Forms.View.Details;
-			this.listView1.Visible = false;
-			this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "ファイルパス";
-			this.columnHeader1.Width = 371;
 			// 
 			// toolStrip1
 			// 
@@ -522,12 +536,12 @@
 			this.toolStripProgressBar1.RightToLeftLayout = true;
 			this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
 			// 
-			// contextMenuStrip1
+			// cms_Title
 			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.cms_Title.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ゲームフォルダを開くToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(165, 26);
+			this.cms_Title.Name = "contextMenuStrip1";
+			this.cms_Title.Size = new System.Drawing.Size(165, 26);
 			// 
 			// ゲームフォルダを開くToolStripMenuItem
 			// 
@@ -536,15 +550,15 @@
 			this.ゲームフォルダを開くToolStripMenuItem.Text = "ゲームフォルダを開く";
 			this.ゲームフォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.ゲームフォルダを開くToolStripMenuItem_Click);
 			// 
-			// contextMenuStrip2
+			// cms_Preset
 			// 
-			this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.cms_Preset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.プリセットフォルダを開くToolStripMenuItem,
             this.プリセットを削除ToolStripMenuItem,
             this.toolStripSeparator3,
             this.共通enblocaliniでリセットするToolStripMenuItem});
-			this.contextMenuStrip2.Name = "contextMenuStrip2";
-			this.contextMenuStrip2.Size = new System.Drawing.Size(223, 76);
+			this.cms_Preset.Name = "contextMenuStrip2";
+			this.cms_Preset.Size = new System.Drawing.Size(223, 76);
 			// 
 			// プリセットフォルダを開くToolStripMenuItem
 			// 
@@ -616,6 +630,7 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			this.panel2.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panelR_Center.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
@@ -631,8 +646,8 @@
 			this.toolStrip1.PerformLayout();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
-			this.contextMenuStrip1.ResumeLayout(false);
-			this.contextMenuStrip2.ResumeLayout(false);
+			this.cms_Title.ResumeLayout(false);
+			this.cms_Preset.ResumeLayout(false);
 			this.panelDockCenter.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -648,16 +663,16 @@
 		private System.Windows.Forms.ToolStripButton toolStripButton_Uninstall;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-		private System.Windows.Forms.ImageList imageList1;
+		public System.Windows.Forms.ImageList imglst_Tree;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel_Language;
 		private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
 		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Reload;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ContextMenuStrip cms_Title;
 		private System.Windows.Forms.ToolStripMenuItem ゲームフォルダを開くToolStripMenuItem;
-		private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+		private System.Windows.Forms.ContextMenuStrip cms_Preset;
 		private System.Windows.Forms.ToolStripMenuItem プリセットフォルダを開くToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem プリセットを削除ToolStripMenuItem;
 		private System.Windows.Forms.Panel panel1;
@@ -681,7 +696,7 @@
 		private System.Windows.Forms.ToolStripDropDownButton uiAddGameTitle;
 		private System.Windows.Forms.LinkLabel linkLabel_Nexus;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ImageList imageList2;
+		private System.Windows.Forms.ImageList imglst_FilePath;
 		private System.Windows.Forms.LinkLabel linkLabel_ENB;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Panel panelR_Top;
@@ -690,6 +705,7 @@
 		private System.Windows.Forms.Panel panelR_Bottom;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.ToolStripButton toolStripButton1;
+		private System.Windows.Forms.Panel panel2;
 	}
 }
 
